@@ -2,92 +2,114 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, BarChart, Bar, Legend
+  PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { TrendingUp, Users, DollarSign, Globe } from 'lucide-react';
+import { TrendingUp, Users, DollarSign, Globe, ArrowUpRight, Zap } from 'lucide-react';
 import { dashboardStats, growthData, categoryDistribution, topCountries } from '../services/mockData';
 
-const StatCard = ({ item, index }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: index * 0.1 }}
-    className="glass-card p-6 border-white/5 relative overflow-hidden group"
-  >
-    <div className="flex justify-between items-start mb-4">
-      <div className={`p-3 rounded-xl bg-${item.color}-500/10 border border-${item.color}-500/20`}>
-        {item.label === 'Total Startups' && <Users className={`text-${item.color}-500 w-6 h-6`} />}
-        {item.label === 'Total Funding' && <DollarSign className={`text-${item.color}-500 w-6 h-6`} />}
-        {item.label === 'AI Tool Categories' && <TrendingUp className={`text-${item.color}-500 w-6 h-6`} />}
-        {item.label === 'Success Rate' && <Globe className={`text-${item.color}-500 w-6 h-6`} />}
-      </div>
-      <span className="text-emerald-500 text-sm font-bold">{item.trend}</span>
-    </div>
-    <p className="text-gray-400 text-sm mb-1">{item.label}</p>
-    <h3 className="text-2xl font-bold font-['Outfit']">{item.value}</h3>
-    <div className={`absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-${item.color}-500/0 via-${item.color}-500/50 to-${item.color}-500/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}></div>
-  </motion.div>
-);
-
 const Dashboard = () => {
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.3 }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', damping: 25, stiffness: 100 } }
+  };
+
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="space-y-8"
+      variants={container}
+      initial="hidden"
+      animate="show"
+      exit={{ opacity: 0, transition: { duration: 0.2 } }}
+      className="space-y-12"
     >
-      <header className="flex flex-col gap-2">
-        <h2 className="text-3xl font-bold font-['Outfit']">Ecosystem Overview</h2>
-        <p className="text-gray-400">Real-time intelligence on the AI startup landscape.</p>
+      <header className="flex flex-col gap-4 text-center max-w-2xl mx-auto mb-16">
+        <motion.div variants={item} className="w-fit mx-auto px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary tracking-widest uppercase flex items-center gap-2">
+          <Zap className="w-3 h-3 fill-primary" />
+          Intelligence Platform v4.0
+        </motion.div>
+        <motion.h1 variants={item} className="text-5xl md:text-7xl font-bold tracking-tighter leading-tight">
+          Analyze the <span className="text-muted">Future</span> of AI.
+        </motion.h1>
+        <motion.p variants={item} className="text-xl text-muted leading-relaxed">
+          The ultimate engine for startup intelligence and ecosystem analytics.
+        </motion.p>
       </header>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {dashboardStats.map((stat, i) => (
-          <StatCard key={stat.label} item={stat} index={i} />
-        ))}
-      </div>
-
-      {/* Main Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 glass-card p-6 border-white/5 min-h-[400px]">
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-primary" />
-            Funding & Growth Trends
-          </h3>
-          <div className="h-[300px] w-full">
+      {/* Bento Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[200px]">
+        
+        {/* Main Growth Chart */}
+        <motion.div variants={item} className="md:col-span-8 md:row-span-2 bento-card flex flex-col">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h3 className="text-2xl font-bold font-['Outfit']">Funding Velocity</h3>
+              <p className="text-sm text-muted">Capital deployment across AI sectors.</p>
+            </div>
+            <div className="flex gap-2">
+              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs">Real-time</span>
+              <span className="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-xs text-primary font-bold">+24%</span>
+            </div>
+          </div>
+          <div className="flex-1 min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={growthData}>
                 <defs>
                   <linearGradient id="colorFunding" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                <XAxis dataKey="month" stroke="#ffffff50" axisLine={false} tickLine={false} />
-                <YAxis stroke="#ffffff50" axisLine={false} tickLine={false} />
+                <XAxis dataKey="month" hide />
+                <YAxis hide />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                  contentStyle={{ backgroundColor: '#000', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', backdropFilter: 'blur(10px)' }}
                   itemStyle={{ color: '#fff' }}
                 />
                 <Area 
                   type="monotone" 
                   dataKey="funding" 
                   stroke="#3b82f6" 
-                  strokeWidth={3}
+                  strokeWidth={4}
                   fillOpacity={1} 
                   fill="url(#colorFunding)" 
                 />
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="glass-card p-6 border-white/5">
+        {/* Stats 1 */}
+        <motion.div variants={item} className="md:col-span-4 md:row-span-1 bento-card bg-gradient-to-br from-primary/10 to-transparent flex flex-col justify-between">
+          <Users className="w-8 h-8 text-primary" />
+          <div>
+            <p className="text-sm text-muted mb-1 font-medium">Total Startups</p>
+            <h3 className="text-4xl font-bold tracking-tighter">12,450</h3>
+          </div>
+        </motion.div>
+
+        {/* Stats 2 */}
+        <motion.div variants={item} className="md:col-span-4 md:row-span-1 bento-card flex flex-col justify-between group">
+          <div className="flex justify-between">
+            <DollarSign className="w-8 h-8 text-accent" />
+            <ArrowUpRight className="w-5 h-5 text-muted group-hover:text-white transition-colors" />
+          </div>
+          <div>
+            <p className="text-sm text-muted mb-1 font-medium">Capital Raised</p>
+            <h3 className="text-4xl font-bold tracking-tighter">$84.2B</h3>
+          </div>
+        </motion.div>
+
+        {/* Market Share */}
+        <motion.div variants={item} className="md:col-span-4 md:row-span-2 bento-card flex flex-col">
           <h3 className="text-xl font-bold mb-6">Market Share</h3>
-          <div className="h-[300px] w-full">
+          <div className="flex-1 min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -95,64 +117,72 @@ const Dashboard = () => {
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
+                  outerRadius={90}
+                  paddingAngle={8}
                   dataKey="value"
                 >
                   {categoryDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                    <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
                   ))}
                 </Pie>
-                <Tooltip 
-                   contentStyle={{ backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                />
-                <Legend layout="vertical" verticalAlign="middle" align="right" />
+                <Tooltip contentStyle={{ backgroundColor: '#000', borderRadius: '12px', border: 'none' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
-        </div>
-      </div>
+          <div className="grid grid-cols-2 gap-2 mt-4">
+             {categoryDistribution.slice(0, 4).map(c => (
+               <div key={c.name} className="flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: c.color }} />
+                 <span className="text-[10px] text-muted uppercase font-bold truncate">{c.name}</span>
+               </div>
+             ))}
+          </div>
+        </motion.div>
 
-      {/* Bottom Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="glass-card p-6 border-white/5">
-          <h3 className="text-xl font-bold mb-6">Global AI Hubs</h3>
-          <div className="space-y-4">
-            {topCountries.map((c, i) => (
-              <div key={c.country} className="flex items-center justify-between group">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{c.flag}</span>
-                  <span className="font-medium text-gray-300 group-hover:text-white transition-colors">{c.country}</span>
-                </div>
-                <div className="flex items-center gap-4 flex-1 max-w-[200px]">
-                  <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+        {/* Global Hubs */}
+        <motion.div variants={item} className="md:col-span-8 md:row-span-2 bento-card">
+           <div className="flex justify-between items-center mb-8">
+              <h3 className="text-2xl font-bold font-['Outfit']">Global Ecosystems</h3>
+              <Globe className="text-muted w-6 h-6" />
+           </div>
+           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+             {topCountries.map((c, i) => (
+               <div key={c.country} className="space-y-3">
+                 <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                       <span className="text-xl">{c.flag}</span>
+                       <span className="font-bold">{c.country}</span>
+                    </div>
+                    <span className="text-sm font-medium text-muted">{c.startups}</span>
+                 </div>
+                 <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                     <motion.div 
                       initial={{ width: 0 }}
                       animate={{ width: `${(c.startups / 4500) * 100}%` }}
-                      transition={{ duration: 1, delay: i * 0.1 }}
-                      className="h-full bg-primary"
+                      transition={{ duration: 1.5, delay: i * 0.1, ease: 'circOut' }}
+                      className="h-full bg-primary shadow-[0_0_10px_rgba(59,130,246,0.5)]"
                     />
-                  </div>
-                  <span className="text-sm font-bold w-12 text-right">{c.startups}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="glass-card p-6 border-white/5 flex flex-col justify-center items-center text-center space-y-4 bg-gradient-to-br from-primary/5 to-accent/5">
-          <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-2">
-            <TrendingUp className="text-primary w-8 h-8" />
-          </div>
-          <h3 className="text-xl font-bold">Predictive Growth</h3>
-          <p className="text-gray-400 max-w-xs">
-            Our ML model predicts a <span className="text-primary font-bold">34% increase</span> in AI automation startups by Q4 2026.
-          </p>
-          <button className="glass-button bg-primary/20 border-primary/30 text-primary font-bold hover:bg-primary hover:text-white">
-            View Forecast Report
-          </button>
-        </div>
+                 </div>
+               </div>
+             ))}
+           </div>
+        </motion.div>
       </div>
+
+      {/* CTA Section */}
+      <motion.div 
+        variants={item}
+        className="bento-card bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 p-12 text-center flex flex-col items-center justify-center space-y-6"
+      >
+        <h2 className="text-4xl font-bold tracking-tighter">Ready to outpace the market?</h2>
+        <p className="text-lg text-white/60 max-w-xl">
+          Get deeper insights, custom ML reports, and early-stage alerts delivered to your workspace.
+        </p>
+        <div className="flex gap-4">
+          <button className="premium-button">Start Free Trial</button>
+          <button className="px-6 py-2.5 rounded-full font-medium border border-white/10 hover:bg-white/5 transition-all">Talk to Sales</button>
+        </div>
+      </motion.div>
     </motion.div>
   );
 };
