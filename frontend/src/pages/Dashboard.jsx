@@ -2,187 +2,153 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend
+  BarChart, Bar, Cell
 } from 'recharts';
-import { TrendingUp, Users, DollarSign, Globe, ArrowUpRight, Zap } from 'lucide-react';
+import { Users, DollarSign, TrendingUp, Globe, FileText, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { dashboardStats, growthData, categoryDistribution, topCountries } from '../services/mockData';
 
+const StatCard = ({ item }) => {
+  const isPositive = item.trend.startsWith('+');
+  return (
+    <div className="stat-card">
+      <div className="flex justify-between items-start mb-4">
+        <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+          {item.label === 'Total Startups' && <Users className="text-primary w-5 h-5" />}
+          {item.label === 'Total Funding' && <DollarSign className="text-primary w-5 h-5" />}
+          {item.label === 'AI Tool Categories' && <TrendingUp className="text-primary w-5 h-5" />}
+          {item.label === 'Success Rate' && <Globe className="text-primary w-5 h-5" />}
+        </div>
+        <div className={`flex items-center gap-1 text-xs font-bold ${isPositive ? 'text-emerald-500' : 'text-rose-500'}`}>
+          {isPositive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+          {item.trend}
+        </div>
+      </div>
+      <p className="text-xs text-muted font-medium uppercase tracking-wider mb-1">{item.label}</p>
+      <h3 className="text-2xl font-bold">{item.value}</h3>
+    </div>
+  );
+};
+
 const Dashboard = () => {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.3 }
-    }
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: 'spring', damping: 25, stiffness: 100 } }
-  };
-
   return (
     <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      exit={{ opacity: 0, transition: { duration: 0.2 } }}
-      className="space-y-12"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-6"
     >
-      <header className="flex flex-col gap-4 text-center max-w-2xl mx-auto mb-16">
-        <motion.div variants={item} className="w-fit mx-auto px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary tracking-widest uppercase flex items-center gap-2">
-          <Zap className="w-3 h-3 fill-primary" />
-          Intelligence Platform v4.0
-        </motion.div>
-        <motion.h1 variants={item} className="text-5xl md:text-7xl font-bold tracking-tighter leading-tight">
-          Analyze the <span className="text-muted">Future</span> of AI.
-        </motion.h1>
-        <motion.p variants={item} className="text-xl text-muted leading-relaxed">
-          The ultimate engine for startup intelligence and ecosystem analytics.
-        </motion.p>
-      </header>
+      <div className="flex justify-between items-end">
+        <div>
+          <h2 className="text-2xl font-bold">Analytics Overview</h2>
+          <p className="text-sm text-muted">A summary of the current AI startup ecosystem.</p>
+        </div>
+        <div className="text-xs text-muted bg-card px-3 py-1.5 rounded-lg border border-card-border">
+          Last updated: 11 May 2026, 22:45
+        </div>
+      </div>
 
-      {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[200px]">
-        
-        {/* Main Growth Chart */}
-        <motion.div variants={item} className="md:col-span-8 md:row-span-2 bento-card flex flex-col">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h3 className="text-2xl font-bold font-['Outfit']">Funding Velocity</h3>
-              <p className="text-sm text-muted">Capital deployment across AI sectors.</p>
-            </div>
-            <div className="flex gap-2">
-              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs">Real-time</span>
-              <span className="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-xs text-primary font-bold">+24%</span>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {dashboardStats.map((stat) => (
+          <StatCard key={stat.label} item={stat} />
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 dashboard-card">
+          <div className="flex justify-between items-center mb-6">
+             <h3 className="text-lg font-bold">Funding Growth Trend</h3>
+             <select className="bg-background border border-card-border rounded-lg px-2 py-1 text-[10px] outline-none">
+                <option>Last 12 Months</option>
+                <option>Last 6 Months</option>
+             </select>
           </div>
-          <div className="flex-1 min-h-0">
+          <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={growthData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                <XAxis dataKey="month" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="funding" 
+                  stroke="#3b82f6" 
+                  fillOpacity={1} 
+                  fill="url(#colorFunding)" 
+                  strokeWidth={2}
+                />
                 <defs>
                   <linearGradient id="colorFunding" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="month" hide />
-                <YAxis hide />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#000', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', backdropFilter: 'blur(10px)' }}
-                  itemStyle={{ color: '#fff' }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="funding" 
-                  stroke="#3b82f6" 
-                  strokeWidth={4}
-                  fillOpacity={1} 
-                  fill="url(#colorFunding)" 
-                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Stats 1 */}
-        <motion.div variants={item} className="md:col-span-4 md:row-span-1 bento-card bg-gradient-to-br from-primary/10 to-transparent flex flex-col justify-between">
-          <Users className="w-8 h-8 text-primary" />
-          <div>
-            <p className="text-sm text-muted mb-1 font-medium">Total Startups</p>
-            <h3 className="text-4xl font-bold tracking-tighter">12,450</h3>
+        <div className="dashboard-card">
+          <h3 className="text-lg font-bold mb-6">Regional Distribution</h3>
+          <div className="space-y-4">
+            {topCountries.map((c) => (
+              <div key={c.country}>
+                <div className="flex justify-between items-center mb-2">
+                   <div className="flex items-center gap-2">
+                     <span>{c.flag}</span>
+                     <span className="text-sm font-medium">{c.country}</span>
+                   </div>
+                   <span className="text-xs text-muted">{c.startups}</span>
+                </div>
+                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                   <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(c.startups / 4500) * 100}%` }}
+                    className="h-full bg-primary"
+                   />
+                </div>
+              </div>
+            ))}
           </div>
-        </motion.div>
-
-        {/* Stats 2 */}
-        <motion.div variants={item} className="md:col-span-4 md:row-span-1 bento-card flex flex-col justify-between group">
-          <div className="flex justify-between">
-            <DollarSign className="w-8 h-8 text-accent" />
-            <ArrowUpRight className="w-5 h-5 text-muted group-hover:text-white transition-colors" />
-          </div>
-          <div>
-            <p className="text-sm text-muted mb-1 font-medium">Capital Raised</p>
-            <h3 className="text-4xl font-bold tracking-tighter">$84.2B</h3>
-          </div>
-        </motion.div>
-
-        {/* Market Share */}
-        <motion.div variants={item} className="md:col-span-4 md:row-span-2 bento-card flex flex-col">
-          <h3 className="text-xl font-bold mb-6">Market Share</h3>
-          <div className="flex-1 min-h-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={categoryDistribution}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={90}
-                  paddingAngle={8}
-                  dataKey="value"
-                >
-                  {categoryDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={{ backgroundColor: '#000', borderRadius: '12px', border: 'none' }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="grid grid-cols-2 gap-2 mt-4">
-             {categoryDistribution.slice(0, 4).map(c => (
-               <div key={c.name} className="flex items-center gap-2">
-                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: c.color }} />
-                 <span className="text-[10px] text-muted uppercase font-bold truncate">{c.name}</span>
-               </div>
-             ))}
-          </div>
-        </motion.div>
-
-        {/* Global Hubs */}
-        <motion.div variants={item} className="md:col-span-8 md:row-span-2 bento-card">
-           <div className="flex justify-between items-center mb-8">
-              <h3 className="text-2xl font-bold font-['Outfit']">Global Ecosystems</h3>
-              <Globe className="text-muted w-6 h-6" />
-           </div>
-           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-             {topCountries.map((c, i) => (
-               <div key={c.country} className="space-y-3">
-                 <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                       <span className="text-xl">{c.flag}</span>
-                       <span className="font-bold">{c.country}</span>
-                    </div>
-                    <span className="text-sm font-medium text-muted">{c.startups}</span>
-                 </div>
-                 <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(c.startups / 4500) * 100}%` }}
-                      transition={{ duration: 1.5, delay: i * 0.1, ease: 'circOut' }}
-                      className="h-full bg-primary shadow-[0_0_10px_rgba(59,130,246,0.5)]"
-                    />
-                 </div>
-               </div>
-             ))}
-           </div>
-        </motion.div>
+          <button className="w-full mt-8 py-2 text-xs font-medium border border-card-border rounded-lg hover:bg-white/5 transition-colors">
+            View Regional Map
+          </button>
+        </div>
       </div>
 
-      {/* CTA Section */}
-      <motion.div 
-        variants={item}
-        className="bento-card bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 p-12 text-center flex flex-col items-center justify-center space-y-6"
-      >
-        <h2 className="text-4xl font-bold tracking-tighter">Ready to outpace the market?</h2>
-        <p className="text-lg text-white/60 max-w-xl">
-          Get deeper insights, custom ML reports, and early-stage alerts delivered to your workspace.
-        </p>
-        <div className="flex gap-4">
-          <button className="premium-button">Start Free Trial</button>
-          <button className="px-6 py-2.5 rounded-full font-medium border border-white/10 hover:bg-white/5 transition-all">Talk to Sales</button>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="dashboard-card">
+           <div className="flex items-center gap-2 mb-4">
+              <FileText className="text-primary w-5 h-5" />
+              <h3 className="text-lg font-bold">Recent Insights</h3>
+           </div>
+           <div className="space-y-3">
+              {[
+                "Generative AI tools saw a 45% increase in funding this quarter.",
+                "Market gap detected in AI-driven compliance for European markets.",
+                "US-based startups continue to lead in LLM infrastructure.",
+                "Average success rate for AI agents remains stable at 68%."
+              ].map((insight, i) => (
+                <div key={i} className="flex gap-3 p-3 rounded-lg bg-white/5 border border-white/5 text-sm text-slate-300">
+                   <div className="w-1 h-full bg-primary rounded-full shrink-0" />
+                   {insight}
+                </div>
+              ))}
+           </div>
         </div>
-      </motion.div>
+        
+        <div className="dashboard-card flex flex-col justify-center items-center text-center p-12 bg-primary/5">
+           <h3 className="text-xl font-bold mb-2">Generate Report</h3>
+           <p className="text-sm text-muted mb-6 max-w-sm">
+             Download a comprehensive PDF report of the current market trends and analysis.
+           </p>
+           <button className="btn-primary">
+             <FileText className="w-4 h-4" />
+             Download PDF Report
+           </button>
+        </div>
+      </div>
     </motion.div>
   );
 };

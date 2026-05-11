@@ -1,26 +1,26 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Lightbulb, Target, ArrowUpRight, ShieldAlert, Sparkles } from 'lucide-react';
+import { Lightbulb, Target, ArrowUpRight, ShieldCheck, AlertCircle } from 'lucide-react';
 
 const MarketGap = () => {
   const gaps = [
     { 
-      sector: 'Regulatory Tech', 
+      sector: 'AI for Legal Compliance', 
       opportunity: '9.8', 
-      description: 'AI-driven compliance for the EU AI Act is currently underserved in the SME sector.',
-      tag: 'Urgent'
+      description: 'Significant lack of automated tools for monitoring EU AI Act compliance in small enterprises.',
+      tag: 'Critical Gap'
     },
     { 
-      sector: 'Edge Computing', 
+      sector: 'Edge AI Optimization', 
       opportunity: '8.5', 
-      description: 'Hardware-aware model optimization for low-power consumer devices.',
+      description: 'High demand for efficient hardware-aware models for consumer electronics.',
       tag: 'Trending'
     },
     { 
-      sector: 'Bio-Intelligence', 
+      sector: 'Specialized Bio-AI', 
       opportunity: '9.2', 
-      description: 'Generative protein design platforms with built-in lab validation loops.',
-      tag: 'High Potential'
+      description: 'Research indicates a gap in protein folding prediction platforms with integrated wet-lab APIs.',
+      tag: 'High Growth'
     }
   ];
 
@@ -28,89 +28,68 @@ const MarketGap = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-16"
+      className="space-y-8"
     >
-      <header className="flex flex-col items-center text-center space-y-6 max-w-3xl mx-auto">
-        <motion.div 
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="w-16 h-16 rounded-3xl bg-primary/20 flex items-center justify-center border border-primary/30"
-        >
-          <Lightbulb className="text-primary w-8 h-8 fill-primary/20" />
-        </motion.div>
-        <h2 className="text-6xl font-bold tracking-tighter leading-tight">
-          Market Gap <span className="text-muted italic">Analysis</span>
-        </h2>
-        <p className="text-xl text-muted leading-relaxed">
-          We use proprietary ML models to identify underserved sectors where demand significantly outpaces existing supply.
-        </p>
+      <header>
+        <h2 className="text-2xl font-bold">Market Opportunity Analysis</h2>
+        <p className="text-sm text-muted">Identifying underserved AI categories based on recent market data.</p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {gaps.map((gap, i) => (
-          <motion.div
-            key={gap.sector}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="bento-card group flex flex-col justify-between h-[450px]"
-          >
-            <div className="space-y-6">
+          <div key={gap.sector} className="dashboard-card flex flex-col justify-between group">
+            <div className="space-y-4">
               <div className="flex justify-between items-start">
-                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-muted group-hover:text-white transition-colors">
+                <span className="px-2 py-1 rounded bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary uppercase tracking-wider">
                   {gap.tag}
                 </span>
-                <ArrowUpRight className="w-6 h-6 text-muted group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                <ArrowUpRight className="w-4 h-4 text-muted group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-4xl font-bold font-['Outfit'] tracking-tight leading-none">{gap.sector}</h3>
-              <p className="text-muted leading-relaxed">
+              <h3 className="text-xl font-bold">{gap.sector}</h3>
+              <p className="text-sm text-slate-400 leading-relaxed">
                 {gap.description}
               </p>
             </div>
             
-            <div className="space-y-2">
-               <div className="flex justify-between items-end">
-                  <span className="text-xs font-bold text-muted uppercase">Opportunity Index</span>
-                  <span className="text-5xl font-black text-white tracking-tighter">{gap.opportunity}</span>
+            <div className="mt-8 pt-6 border-t border-card-border">
+               <div className="flex justify-between items-center mb-2">
+                  <span className="text-[10px] font-bold text-muted uppercase">Opportunity Index</span>
+                  <span className="text-2xl font-bold text-primary">{gap.opportunity}</span>
                </div>
-               <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${parseFloat(gap.opportunity) * 10}%` }}
-                    className="h-full bg-primary"
-                  />
+               <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-primary" style={{ width: `${parseFloat(gap.opportunity) * 10}%` }} />
                </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
 
-      <div className="bento-card relative overflow-hidden p-16">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/10 to-transparent pointer-events-none" />
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
-            <div className="flex items-center gap-3 text-primary font-bold tracking-widest text-xs uppercase">
-              <Sparkles className="w-4 h-4 fill-primary" />
-              Intelligence Prediction
+      <div className="dashboard-card bg-slate-800/20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 text-amber-500 font-bold text-xs uppercase tracking-widest">
+              <AlertCircle className="w-4 h-4" />
+              Key Researcher Finding
             </div>
-            <h3 className="text-5xl font-bold tracking-tighter leading-tight">
-              The "Hidden" <br />Unicorn Sector
-            </h3>
-            <p className="text-muted text-lg leading-relaxed">
-              Our data predicts that <span className="text-white font-bold underline decoration-primary underline-offset-4">Decentralized AI Inference</span> will be the single most profitable niche in 2027. Infrastructure projects here are seeing 12x organic developer growth.
+            <h3 className="text-3xl font-bold">The Next Big Sector</h3>
+            <p className="text-slate-400 leading-relaxed">
+              Our regression model indicates that **Decentralized AI Training** infrastructure will be the most underserved market segment in the coming year.
             </p>
-            <button className="premium-button">View Full Research</button>
+            <div className="flex gap-4">
+               <button className="btn-primary">View Statistical Model</button>
+               <button className="btn-outline">Download Full Study</button>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-             <div className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-center text-center space-y-2">
-                <Target className="text-primary w-8 h-8 mb-2" />
-                <p className="text-3xl font-bold">94%</p>
-                <p className="text-[10px] text-muted uppercase font-bold tracking-widest">Confidence</p>
+             <div className="bg-card border border-card-border rounded-xl p-6 text-center space-y-1">
+                <ShieldCheck className="text-emerald-500 w-6 h-6 mx-auto mb-2" />
+                <p className="text-2xl font-bold">94%</p>
+                <p className="text-[10px] text-muted uppercase font-bold tracking-widest">Prediction Accuracy</p>
              </div>
-             <div className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-center text-center space-y-2">
-                <ShieldAlert className="text-accent w-8 h-8 mb-2" />
-                <p className="text-3xl font-bold">Low</p>
-                <p className="text-[10px] text-muted uppercase font-bold tracking-widest">Competition</p>
+             <div className="bg-card border border-card-border rounded-xl p-6 text-center space-y-1">
+                <Target className="text-primary w-6 h-6 mx-auto mb-2" />
+                <p className="text-2xl font-bold">Low</p>
+                <p className="text-[10px] text-muted uppercase font-bold tracking-widest">Market Saturation</p>
              </div>
           </div>
         </div>

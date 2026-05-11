@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Bot, Sparkles, Command } from 'lucide-react';
+import { MessageCircle, X, Send, Bot } from 'lucide-react';
 
 const AIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'bot', text: "I'm Aura. Your AI copilot for ecosystem intelligence. Ask me anything about startups, funding, or market gaps." }
+    { role: 'bot', text: 'Hi! I am your AI project assistant. Ask me about the data or current trends.' }
   ]);
   const [input, setInput] = useState('');
 
@@ -20,97 +20,68 @@ const AIChatbot = () => {
     setTimeout(() => {
       setMessages(prev => [...prev, { 
         role: 'bot', 
-        text: `Scanning the network for "${input}"... Analyzing growth vectors... I recommend looking into the Series A trends in this sector.` 
+        text: 'Analyzing the dataset... Based on the current trends, Generative AI remains the most funded sector.' 
       }]);
-    }, 1200);
+    }, 1000);
   };
 
   return (
-    <>
-      <div className="fixed bottom-10 right-10 z-[100]">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="group relative flex items-center gap-3 bg-white text-black px-6 py-3 rounded-full font-bold shadow-[0_20px_40px_rgba(255,255,255,0.15)] hover:scale-105 transition-all duration-300"
-        >
-          <Sparkles className="w-5 h-5 fill-black" />
-          <span>Ask Aura</span>
-          <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/10 text-[10px] ml-2">
-            <Command className="w-2.5 h-2.5" />
-            <span>K</span>
-          </div>
-        </button>
-      </div>
-
+    <div className="fixed bottom-6 right-6 z-50">
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="w-full max-w-2xl bg-secondary border border-white/10 rounded-[2.5rem] shadow-[0_0_100px_-20px_rgba(59,130,246,0.3)] flex flex-col overflow-hidden"
-            >
-              <div className="p-8 border-b border-white/5 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center">
-                    <Bot className="text-primary w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold font-['Outfit']">Aura Intelligence</h3>
-                    <p className="text-sm text-muted">AI Copilot • Online</p>
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="w-80 md:w-96 h-[500px] mb-4 bg-card border border-card-border rounded-2xl flex flex-col overflow-hidden shadow-2xl shadow-black/50"
+          >
+            <div className="p-4 bg-slate-800 border-b border-card-border flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Bot className="text-primary w-5 h-5" />
+                <span className="font-bold text-sm">AI Assistant</span>
+              </div>
+              <button onClick={() => setIsOpen(false)} className="text-muted hover:text-white transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 text-sm">
+              {messages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] p-3 rounded-xl ${
+                    msg.role === 'user' 
+                      ? 'bg-primary text-white rounded-tr-none' 
+                      : 'bg-slate-800 text-slate-200 border border-card-border rounded-tl-none'
+                  }`}>
+                    {msg.text}
                   </div>
                 </div>
-                <button onClick={() => setIsOpen(false)} className="p-3 rounded-full hover:bg-white/5 text-muted hover:text-white transition-all">
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
+              ))}
+            </div>
 
-              <div className="flex-1 overflow-y-auto p-8 space-y-6 min-h-[400px] max-h-[500px] scrollbar-thin">
-                {messages.map((msg, i) => (
-                  <motion.div 
-                    key={i}
-                    initial={{ opacity: 0, x: msg.role === 'user' ? 20 : -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div className={`max-w-[85%] p-5 rounded-[2rem] text-base leading-relaxed ${
-                      msg.role === 'user' 
-                        ? 'bg-primary text-white rounded-tr-none shadow-xl shadow-primary/20' 
-                        : 'bg-white/5 text-gray-200 rounded-tl-none border border-white/5'
-                    }`}>
-                      {msg.text}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="p-8 bg-black/20 border-t border-white/5">
-                <form onSubmit={handleSend} className="relative group">
-                  <input 
-                    type="text" 
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Type your command..."
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-6 pr-16 py-5 outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all text-lg"
-                    autoFocus
-                  />
-                  <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white text-black rounded-xl hover:scale-105 transition-transform shadow-lg">
-                    <Send className="w-5 h-5" />
-                  </button>
-                </form>
-                <div className="mt-4 flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                   {['Trending sectors?', 'Funding in AI agents?', 'Market gap analysis'].map(tag => (
-                     <button key={tag} className="whitespace-nowrap px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-muted hover:text-white hover:border-white/20 transition-all">
-                       {tag}
-                     </button>
-                   ))}
-                </div>
-              </div>
-            </motion.div>
-          </div>
+            <form onSubmit={handleSend} className="p-4 border-t border-card-border flex gap-2 bg-slate-900/50">
+              <input 
+                type="text" 
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask about AI trends..."
+                className="flex-1 bg-background border border-card-border rounded-lg px-4 py-2 text-xs outline-none focus:border-primary/50"
+              />
+              <button type="submit" className="p-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors">
+                <Send className="w-4 h-4" />
+              </button>
+            </form>
+          </motion.div>
         )}
       </AnimatePresence>
-    </>
+
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all shadow-primary/20"
+      >
+        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+      </button>
+    </div>
   );
 };
 

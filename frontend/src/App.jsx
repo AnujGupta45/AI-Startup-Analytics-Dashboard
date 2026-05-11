@@ -8,27 +8,31 @@ import Sentiment from './pages/Sentiment';
 import Intelligence from './pages/Intelligence';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
+import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import AIChatbot from './components/AIChatbot';
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
-        <Navbar />
-        <main className="max-w-7xl mx-auto pt-32 pb-20 px-6 lg:px-10">
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/tools" element={<ToolAnalytics />} />
-              <Route path="/market-gap" element={<MarketGap />} />
-              <Route path="/sentiment" element={<Sentiment />} />
-              <Route path="/intelligence" element={<Intelligence />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/login" element={<Login />} />
-            </Routes>
-          </AnimatePresence>
-        </main>
+      <div className="flex bg-background text-foreground min-h-screen">
+        <Sidebar />
+        <div className="flex-1 flex flex-col min-w-0">
+          <Navbar />
+          <main className="p-8">
+            <AnimatePresence mode="wait">
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/tools" element={<ToolAnalytics />} />
+                <Route path="/market-gap" element={<MarketGap />} />
+                <Route path="/sentiment" element={<Sentiment />} />
+                <Route path="/intelligence" element={<Intelligence />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/login" element={<Login />} />
+              </Routes>
+            </AnimatePresence>
+          </main>
+        </div>
         <AIChatbot />
       </div>
     </Router>
