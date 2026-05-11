@@ -31,7 +31,7 @@
   }
 
   .stat-card {
-    @apply dashboard-card hover:border-primary/50;
+    @apply bg-card border border-card-border rounded-xl p-6 shadow-sm transition-all duration-200 hover:border-primary/50 cursor-pointer;
   }
 
   .btn-primary {
@@ -47,7 +47,7 @@
   }
 
   .sidebar-link-active {
-    @apply bg-primary/10 text-primary hover:text-primary hover:bg-primary/20;
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-lg bg-primary/10 text-primary transition-all;
   }
 
   .form-input {
