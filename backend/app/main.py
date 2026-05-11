@@ -22,4 +22,4 @@ async def root():
     return {"message": "Welcome to AI Startup Analytics API"}
 
 # Include routers
-# app.include_router(api_router, prefix="/api")
+app.include_router(api_router, prefix="/api")
